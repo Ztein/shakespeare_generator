@@ -39,7 +39,9 @@ class ShakespeareGeneratorTF:
             if shuffle:
                 ds = ds.shuffle(100_000, seed=seed)
             ds = ds.batch(batch_size)
-            return ds.map(lambda window: (window[:, :-1], window[:, 1:])).prefetch(1)
+            ds = ds.map(lambda window: (window[:, :-1], window[:, 1:]))
+            ds = ds.repeat()
+            return ds.prefetch(tf.data.AUTOTUNE)
         
         # Split data into train, validation, and test sets
         train_set = to_dataset(self.encoded[:1_000_000], sequence_length, shuffle=True, seed=42)
@@ -73,6 +75,11 @@ class ShakespeareGeneratorTF:
     
     def train(self, model, train_set, valid_set, epochs=10):
         """Train the model"""
+        # Calculate steps per epoch
+        batch_size = 32  # This should match the batch_size in create_datasets
+        steps_per_epoch = 1_000_000 // (batch_size * 100)  # dataset_size // (batch_size * sequence_length)
+        validation_steps = 60_000 // (batch_size * 100)  # validation_size // (batch_size * sequence_length)
+        
         # Create checkpoints directory if it doesn't exist
         checkpoint_dir = "checkpoints"
         if not os.path.exists(checkpoint_dir):
@@ -97,6 +104,8 @@ class ShakespeareGeneratorTF:
                 train_set,
                 validation_data=valid_set,
                 epochs=epochs,
+                steps_per_epoch=steps_per_epoch,
+                validation_steps=validation_steps,
                 callbacks=[model_ckpt, early_stopping]
             )
             return history
