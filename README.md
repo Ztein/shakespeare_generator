@@ -13,11 +13,12 @@ A neural network-based text generator trained on Shakespeare's complete works. T
 
 ## Requirements
 
-- Python 3.11.4
+- Python 3.8-3.11 (tested with 3.11.9)
 - PyTorch 2.0.1
 - CUDA 11.8
 - MPS 1.4
 - Apple Silicon (M-series) processors
+- TensorFlow 2.12.0 (for TF implementation)
 
 ```bash
 pip install -r requirements.txt
@@ -32,6 +33,12 @@ python train.py
 2. Generate text:
 ```bash
 python generate.py
+```
+
+OR
+
+```bash
+python from_book.py
 ```
 
 ## Model Architecture

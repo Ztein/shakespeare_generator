@@ -221,6 +221,9 @@ data/
 
 # Model checkpoints
 checkpoint_*.pt
+*.h5
+*.keras
+checkpoints/
 
 # Virtual Environment
 venv/
