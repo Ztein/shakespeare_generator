@@ -16,7 +16,7 @@ def get_device():
         print("Using CPU")
     return device
 
-def generate_text(model, dataset, start_text="The ", length=500, temperature=0.8):
+def generate_text(model, dataset, start_text="ARVID: ", length=2000, temperature=0.8):
     model.eval()
     device = next(model.parameters()).device
     
